@@ -5,7 +5,7 @@ on:
     branches: [main]
   pull_request:
   schedule:
-    - cron: "59 3 * * *"
+    - cron: "59 3 * * 1" # weekly, Monday 03:xx UTC (live tests cost about 2 credits)
   workflow_dispatch:
 
 permissions:
