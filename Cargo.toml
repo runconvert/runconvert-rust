@@ -10,8 +10,8 @@ repository = "https://github.com/runconvert/runconvert-rust"
 keywords = ["runconvert", "convert", "file-converter", "pdf", "api"]
 categories = ["api-bindings", "multimedia"]
 readme = "README.md"
-# Not published until launch.
-publish = false
+documentation = "https://docs.rs/runconvert"
+include = ["src/**", "README.md", "LICENSE", "CHANGELOG.md"]
 
 [dependencies]
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream"] }
