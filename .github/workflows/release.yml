@@ -1,0 +1,31 @@
+# Publishes to crates.io when a version tag is pushed:
+#   1. bump "version" in Cargo.toml and CHANGELOG.md, merge to main
+#   2. gh release create v0.2.0 --target main   (or: git tag v0.2.0 && git push origin v0.2.0)
+#   3. approve the "release" environment in the Actions tab
+# Uses crates.io trusted publishing (OIDC): no crates.io token is stored anywhere.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo test --test unit
+      - name: The tag matches Cargo.toml
+        run: test "v$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')" = "$GITHUB_REF_NAME"
+      - uses: rust-lang/crates-io-auth-action@v1
+        id: auth
+      - run: cargo publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}

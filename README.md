@@ -1,7 +1,5 @@
 # RunConvert SDK for Rust
 
-> **Not published yet.** This SDK launches on crates.io soon, so the install command below won't work until then. Updates: https://www.runconvert.com/sdks
-
 Convert files between 240+ formats (3,000+ conversions) with the [RunConvert API](https://www.runconvert.com/docs):
 documents, images, video, audio, ebooks, archives, fonts and CAD. Async (tokio + reqwest with rustls).
 
