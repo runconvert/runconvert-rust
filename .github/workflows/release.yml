@@ -8,6 +8,8 @@ name: Release
 on:
   push:
     tags: ["v*"]
+  # Started by release-please (release-please.yml) on the new tag.
+  workflow_dispatch:
 
 permissions:
   contents: read

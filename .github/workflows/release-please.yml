@@ -1,0 +1,36 @@
+# Releases, automatically:
+#   1. Merge PRs into main with Conventional Commit titles: "fix: ..." (patch),
+#      "feat: ..." (minor; before 1.0 also breaking changes), "feat!: ..." (major after 1.0).
+#      docs:, ci:, chore:, test: and refactor: don't make a release.
+#   2. This workflow keeps a "chore(main): release X.Y.Z" PR up to date with the next
+#      version, the version bumps in the code and the CHANGELOG. It's labelled
+#      "autorelease: pending".
+#   3. Merge that PR: the version is tagged, a GitHub Release is written from the
+#      changelog, and it's published to crates.io.
+name: Release Please
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@5c625bfb5d1ff62eadeeb3772007f7f66fdcf071 # v4
+        id: release
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+      # A tag created with the workflow token doesn't start other workflows, so
+      # start the publish workflow (release.yml: tests, then crates.io) directly.
+      - name: Publish
+        if: ${{ steps.release.outputs.release_created }}
+        run: gh workflow run release.yml --repo "$GITHUB_REPOSITORY" --ref "${{ steps.release.outputs.tag_name }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
